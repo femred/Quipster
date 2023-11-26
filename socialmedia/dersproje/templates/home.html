@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{}	<h1>Quips<h1>
+<br/>
+		{% for quip in quips %}
+			<div class="alert alert-dark" role="alert">
+  				{{quip}}
+			</div><br/><br/>
+		{% endfor %}
+{% endblock %}
