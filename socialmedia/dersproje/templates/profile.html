@@ -10,7 +10,10 @@
 			    {% if quips %}	
 				    {% for quip in quips %}
 								<div class="alert alert-dark" role="alert">
-					  				{{quip}}
+									{{ quip.body }} <br/>
+									<small class="text-muted">
+										({{ quip.created_at }}) By @{{ quip.user.username }}
+									</small>
 								</div><br/><br/>
 							{% endfor %}
 					{% endif %}
