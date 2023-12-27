@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block content %}
 
 {% if profile %}
@@ -10,11 +11,39 @@
 			    {% if quips %}	
 				    {% for quip in quips %}
 								<div class="alert alert-dark" role="alert">
+				<div class="container">
+					<div class="row">
+						<div class="col-1">
+							{% if profile.profile_image %}
+							<img src="{{ profile.profile_image.url }}" width="50" height="50" class="rounded-circle" alt="{{ profile.user.username}}">
+
+							{% else %}
+							<img src="{% static 'images/default_profile_picture.png' %}" width="50" height="50" class="rounded-circle" alt="{{ profile.user.username}}">
+
+							{% endif %}
+
+						</div>
+						<div class="col-10">
 									{{ quip.body }} <br/>
 									<small class="text-muted">
 										({{ quip.created_at }}) By @{{ quip.user.username }}
+										{{ quip.number_of_likes }} Likes - 
+										{% if user in quip.likes.all %}
+									<a href="{% url 'quip_like' quip.id %}">
+										<i class="fa-solid fa-heart" style="color:red"></i>
+									</a>
+									{% else %}
+									<a href="{% url 'quip_like' quip.id %}">
+										<i class="fa fa-heart-o" style="color:red"></i>
+									</a>
+									{% endif %}
+
+
 									</small>
 								</div><br/><br/>
+							</div>	
+						</div>
+					</div>				
 							{% endfor %}
 					{% endif %}
 
@@ -22,6 +51,34 @@
 
 			<div class= "col-4">
 				<br/><br/><br/>
+				{% if profile.profile_image %}
+				<img src="{{ profile.profile_image.url }}" class="rounded-circle">
+				<br/><br/>
+				{% endif%}
+				
+				{% if profile.homepage_link %}
+					<a href="{{ profile.homepage_link }}" target="new"><i class="fas fa-link" ></i></a>
+				{% endif %}
+				&nbsp;
+				{% if profile.facebook_link %}
+					<a href="{{ profile.facebook_link }}" target="new"><i class="fa-brands fa-facebook-f" style="color:#316FF6"></i></a> 	
+				{% endif %}
+				&nbsp;
+				{% if profile.instagram_link %}
+				<a href="{{ profile.instagram_link }}" target="new"><i class="fa-brands fa-instagram" style="color:rgb(185, 59, 80)"></i></a>	 
+				{% endif %}
+				&nbsp;
+				{% if profile.linkedin_link %}
+				<a href="{{ profile.linkedin_link }}" target="new"><i class="fa-brands fa-linkedin" style="color:black"></i></a> 		
+				{% endif %}
+				<br/><br/>
+{% if profile.profile_bio %}
+	<p align="justify">
+				{{profile.profile_bio}}
+			</p>
+{% endif %}
+
+<br/><br/>
 				<div class="card">
   <div class="card-header">
     Follows
@@ -70,7 +127,10 @@
 
 {% endif %}
 </form>
-</br>		
+</br>	
+	{% if request.user.id == profile.user.id %}
+	<a href="{% url 'update_user' %}" class="btn btn-outline-secondary">Update Profile</a>
+	{% endif %}
 			</div>
 		</div>
 	</div>

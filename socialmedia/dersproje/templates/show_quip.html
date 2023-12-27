@@ -7,9 +7,9 @@
 		<div class="row">
 				<div class="col-8">
 
-<h1>Quips<h1>
+
 <br/>
-		{% for quip in quips %}
+		
 			<div class="alert alert-dark" role="alert">
 				<div class="container">
 					<div class="row">
@@ -25,25 +25,25 @@
 						<div class="col-10">
   				{{ quip.body }} <br/>
 				<small class="text-muted">
-					({{ quip.created_at }}) By @{{ quip.user.username }} <br/> {{ quip.number_of_likes }}
+					({{ quip.created_at }}) By @{{ quip.user.username }} <br/> {{ quip.number_of_likes }} Likes - 
 
 					{% if user in quip.likes.all %}
 					<a href="{% url 'quip_like' quip.id %}">
-						<i class="fa-solid fa-heart" style="color:red"></i></a>
+						<i class="fa-solid fa-heart" style="color:red"></i>
+					</a>
 					{% else %}
 					<a href="{% url 'quip_like' quip.id %}">
-						<i class="fa fa-heart-o" style="color:red"></i></a>
+						<i class="fa fa-heart-o" style="color:red"></i>
+					</a>
 					{% endif %}
-					<a href="{% url 'quip_show' quip.id %}">
-						<i class="fa-solid fa-share" style="color:blue"></i></a>
-					
+
 
 				</small>
 			</div><br/><br/>
 		</div>	
 	</div>
 </div>	
-		{% endfor %}
+		
 </div>
 <div class= "col-4">
 	<br/><br/><br/>
