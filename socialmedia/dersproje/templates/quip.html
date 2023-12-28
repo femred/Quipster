@@ -1,0 +1,60 @@
+{% load static %}
+
+<div class="card mb-2">
+    <div class="card-header d-flex" style="border-bottom: none; background: transparent;">
+        {% if quip.user.profile.profile_image %}
+        <img src="{{ quip.user.profile.profile_image.url }}" width="32" height="32" class="rounded-circle"
+            alt="{{ profile.user.username}}">
+        {% else %}
+        <img src="{% static 'images/default_profile_picture.png' %}" width="32" height="32" class="rounded-circle"
+            alt="{{ profile.user.username}}">
+        {% endif %}
+
+        <div class="mx-2">
+            <p class="m-0" style="font-weight: 700;">
+                {% if quip.user.first_name and quip.user.last_name %} <span>{{quip.user.first_name}}
+                    {{quip.user.last_name}}</span> {% endif %}
+                <a href="{% url 'profile' user.id %}" class="text-muted">
+                    @{{ quip.user.username }}
+                </a>
+            </p>
+            <p class="m-0 text-muted">{{ quip.time_ago }}</p>
+        </div>
+    </div>
+
+    <div class="card-body pt-0" style="white-space: pre-line;">{{ quip.body }}</div>
+
+    <div class="card-footer d-flex justify-content-between">
+        <button class="btn btn-sm btn-light" data-bs-toggle="collapse" href="#quip-{{quip.id}}-comment" role="button"
+            aria-expanded="false" aria-controls="quip-{{quip.id}}-comment">
+            <i class="fa-regular fa-comment"></i> Comments
+        </button>
+
+        <form action="{% url 'quip_like' quip.id %}">
+            <button class="btn btn-sm btn-light" type="submit">
+                {% if user in quip.likes.all %}
+                <i class="fa-solid fa-heart" style="color:red"></i> Liked
+                {% else %}
+                <i class="fa-regular fa-heart"></i> Like
+                {% endif %}
+                {% if quip.number_of_likes != 0 %}
+                ({{quip.number_of_likes}})
+                {% endif %}
+            </button>
+        </form>
+        <button class="btn btn-sm btn-light" type="submit">
+            <i class="fa-solid fa-arrow-up-from-bracket"></i> Share
+        </button>
+
+    </div>
+    <div class="collapse" id="quip-{{quip.id}}-comment">
+        <div class="card-footer">
+            <form>
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Comment...">
+                    <button class="btn btn-primary btn-sm" type="button">Send</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

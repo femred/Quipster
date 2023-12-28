@@ -3,58 +3,63 @@
 
 {% block content %}
 
-	<div class="container text-center">
-		<div class="row">
-				<div class="col-8">
+<div class="container">
 
-<h1>Quips<h1>
-<br/>
-		{% for quip in quips %}
-			<div class="alert alert-dark" role="alert">
-				<div class="container">
-					<div class="row">
-						<div class="col-1">
-							{% if quip.user.profile.profile_image %}
-							<img src="{{ quip.user.profile.profile_image.url }}" width="50" height="50" class="rounded-circle" alt="{{ profile.user.username}}">
+	<div class="row">
+		<div class="col-7">
+			{% include 'quip-form.html' %}
+			{% for quip in quips %}
+			{% include 'quip.html' %}
+			{% endfor %}
+		</div>
 
-							{% else %}
-							<img src="{% static 'images/default_profile_picture.png' %}" width="50" height="50" class="rounded-circle" alt="{{ profile.user.username}}">
+		<div class="col-4">
+			<div class="card">
+				<div class="card-header">
+					<h6 class="card-title mb-0">Users</h6>
+				</div>
+				<div class="card-body p-0">
+					<div class="list-group list-group-flush">
+						{% for user in users %}
+						<a href="{% url 'profile' user.id %}" class="list-group-item list-group-item-action">
+							<div class="d-flex justify-content-between align-items-center">
+								<span class="d-flex align-items-center">
+									{% if user.profile.profile_image %}
+									<img src="{{ user.profile.profile_image.url }}" width="32" height="32"
+										class="rounded-circle" alt="{{ user.username}}">
+									{% else %}
+									<img src="{% static 'images/default_profile_picture.png' %}" width="32" height="32"
+										class="rounded-circle" alt="{{ user.username}}">
+									{% endif %}
+									<span class="mx-2 d-flex flex-column justify-content-center">
+										{% if user.first_name and user.last_name %}
+										<span>
+											{{user.first_name}} {{user.last_name}}
+										</span>
+										{% endif %}
+										<span>
+											@{{user.username}}
+										</span>
+									</span>
+								</span>
 
-							{% endif %}
-						</div>
-						<div class="col-10">
-  				{{ quip.body }} <br/>
-				<small class="text-muted">
-					({{ quip.created_at }}) By @{{ quip.user.username }} <br/> {{ quip.number_of_likes }}
-
-					{% if user in quip.likes.all %}
-					<a href="{% url 'quip_like' quip.id %}">
-						<i class="fa-solid fa-heart" style="color:red"></i></a>
-					{% else %}
-					<a href="{% url 'quip_like' quip.id %}">
-						<i class="fa fa-heart-o" style="color:red"></i></a>
-					{% endif %}
-					<a href="{% url 'quip_show' quip.id %}">
-						<i class="fa-solid fa-share" style="color:blue"></i></a>
-					
-
-				</small>
-			</div><br/><br/>
-		</div>	
+								{% if user.profile in profile.follows.all %}
+								<form action="{% url 'unfollow' user.id %}">
+									<button class="btn btn-sm btn-outline-danger">Unfollow</button>
+								</form>
+								{% else %}
+								<form action="{% url 'follow' user.id %}">
+									<button class="btn btn-sm btn-outline-success">Follow</button>
+								</form>
+								{% endif %}
+							</div>
+						</a>
+						{% endfor %}
+					</div>
+				</div>
+				<div class="card-footer"></div>
+			</div>
+		</div>
 	</div>
-</div>	
-		{% endfor %}
 </div>
-<div class= "col-4">
-	<br/><br/><br/>
-	{% if form %}
-	<form method=POST>
-		{% csrf_token %}
-		{{ form.as_p }}
-		<button type="submit" class="btn btn-secondary">Quip!</button>
-	  </form>
-	{% endif %}
-
-</div>
-
 {% endblock %}

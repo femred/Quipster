@@ -4,14 +4,18 @@ from .models import Quip, Profile
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
+class ProfileUpdateForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name', 'password']
 
 class ProfilePicForm(forms.ModelForm):
     profile_image = forms.ImageField(label="Profile Picture")
-    profile_bio = forms.CharField(label="Profile Bio", widget=forms.Textarea(attrs={'class':'form-control', 'placeholder':'Profile Bio'}))
-    homepage_link = forms.CharField(label="", widget=forms.Textarea(attrs={'class':'form-control', 'placeholder':'Website Link'}))
-    facebook_link = forms.CharField(label="", widget=forms.Textarea(attrs={'class':'form-control', 'placeholder':'Facebook Link'}))
-    instagram_link = forms.CharField(label="", widget=forms.Textarea(attrs={'class':'form-control', 'placeholder':'Instagram Link'}))
-    linkedin_link = forms.CharField(label="", widget=forms.Textarea(attrs={'class':'form-control', 'placeholder':'Linkedin Link'}))
+    profile_bio = forms.CharField(label="Profile Bio", widget=forms.Textarea(attrs={'class':'form-control', 'rows':'2', 'placeholder':'Profile Bio'}))
+    homepage_link = forms.CharField(label="", widget=forms.TextInput(attrs={'class':'form-control', 'placeholder':'Website Link'}))
+    facebook_link = forms.CharField(label="", widget=forms.TextInput(attrs={'class':'form-control', 'placeholder':'Facebook Link'}))
+    instagram_link = forms.CharField(label="", widget=forms.TextInput(attrs={'class':'form-control', 'placeholder':'Instagram Link'}))
+    linkedin_link = forms.CharField(label="", widget=forms.TextInput(attrs={'class':'form-control', 'placeholder':'Linkedin Link'}))
 
     class Meta:
         model = Profile
@@ -19,10 +23,11 @@ class ProfilePicForm(forms.ModelForm):
 
 class QuipForm(forms.ModelForm):
     body = forms.CharField(required=True,
-                           widget=forms.widgets.Textarea(
+                           widget=forms.Textarea(
                                attrs={
-                               "placeholder": "Enter your Quipster Quip!",
-                               "class":"form-control",
+                               "placeholder": "Whats in your mind today?",
+                               "class":"quip-form form-control input-lg p-text-area",
+                               "rows":"2"
                            }),
                            label="",
                            )

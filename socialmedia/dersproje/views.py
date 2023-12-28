@@ -20,11 +20,11 @@ def home(request):
 				return redirect('home')
 			
 		quips = Quip.objects.all().order_by("-created_at")
-		return render(request, 'home.html', {"quips":quips, "form":form})
+		users = User.objects.all().exclude(pk=request.user.id).order_by('username')
+		profile = Profile.objects.get(user_id = request.user.id)
+		return render(request, 'home.html', {"quips":quips, 'profile': profile, 'users': users, "form":form})
 	else:
-		messages.success(request, ("You must be logged in to view this page."))
-	return render(request, 'home.html', {"quips":quips})
-
+		return redirect('login')
 
 def profile_list(request):
 	if request.user.is_authenticated:
@@ -32,11 +32,50 @@ def profile_list(request):
 		return render(request, 'profile_list.html', {"profiles":profiles})
 	else:
 		return redirect('home')
+	
+def unfollow(request,pk):
+	if request.user.is_authenticated:
+		profile = Profile.objects.get(user_id=pk)
+		request.user.profile.follows.remove(profile)
+		request.user.profile.save()
+
+		messages.success(request,(f"you have succesfully unfollow {profile.user.username}"))
+		return redirect((request.META.get('HTTP_REFERER')))
+
+	else:
+		messages.success(request, ("You Have Been Logged In! Get Quipping! "))
+		return redirect('home')
+
+def follow(request,pk):
+	if request.user.is_authenticated:
+		profile = Profile.objects.get(user_id=pk)
+		request.user.profile.follows.add(profile)
+		request.user.profile.save()
+
+		messages.success(request,(f"you have succesfully follow {profile.user.username}"))
+		return redirect((request.META.get('HTTP_REFERER')))
+
+	else:
+		messages.success(request, ("You Have Been Logged In! Get Quipping! "))
+		return redirect('home')
+
+
+
 
 def profile(request, pk):
 	if request.user.is_authenticated:
 		profile = Profile.objects.get(user_id = pk)
+		user = User.objects.get(id = request.user.id)
 		quips = Quip.objects.filter(user_id=pk).order_by("-created_at")
+		form = QuipForm(request.POST or None)
+
+		if request.method == "POST":
+			if form.is_valid():
+				quip = form.save(commit=False)
+				quip.user = request.user
+				quip.save()
+				messages.success(request, ("Your Quip Has Been Posted!"))
+				return redirect('profile', pk)
 
 		if request.method == "POST":
 			current_user_profile = request.user.profile
@@ -47,9 +86,21 @@ def profile(request, pk):
 				current_user_profile.follows.add(profile)
 			current_user_profile.save()
 
-		return render(request, "profile.html", {"profile":profile, "quips":quips})
+		return render(request, "profile.html", {"profile":profile, "user": user, "form": form, "quips":quips})
 	else:
 		return redirect('home')	
+	
+def followers(request, pk):
+	if request.user.is_authenticated:
+		if request.user.id == pk:
+			profiles = Profile.objects.exclude(user_id=pk)
+			return render(request, 'followers.html', {"profiles":profiles})
+		else:
+			messages.success(request, ("that's not your profile page"))
+			return redirect('home')
+	else:
+		return redirect('home')
+
 
 def login_user(request):
 	if request.method == "POST":

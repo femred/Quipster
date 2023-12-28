@@ -1,0 +1,31 @@
+body {
+  background: #eee;
+  font-family: 'Open Sans', sans-serif;
+  padding: 0px !important;
+  margin: 0px !important;
+  font-size: 13px;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-font-smoothing: antialiased;
+  margin-top:20px;
+}
+
+.quip-form {
+  border: 0;
+  resize: none;
+}
+
+.social-media-icon {
+  font-size: 16px;
+  margin-bottom: 4px;
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  text-decoration: none;
+  color: black;
+}
+
+.social-media-icon i {
+  width: 20px;
+  text-align: center;
+}

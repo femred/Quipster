@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
+from datetime import datetime
 
 class Quip(models.Model):
 	user = models.ForeignKey(
@@ -13,6 +14,18 @@ class Quip(models.Model):
 
 	def number_of_likes(self):
 		return self.likes.count()
+
+	def time_ago(self):
+		time = datetime.now()
+		if self.created_at.day == time.day:
+			return str(time.hour - self.created_at.hour) + " hours ago"
+		else:
+			if self.created_at.month == time.month:
+				return str(time.day - self.created_at.day) + " days ago"
+			else:
+				if self.created_at.year == time.year:
+					return str(time.month - self.created_at.month) + " months ago"
+		return self.created_at
 
 	def __str__(self):
 		return(
@@ -31,7 +44,7 @@ class Profile(models.Model):
 	date_modified = models.DateTimeField(User, auto_now=True)
 	profile_image = models.ImageField(null=True, blank=True, upload_to="images/")
 	
-	profile_bio = models.CharField(null=True, blank=True, max_length=50)
+	profile_bio = models.CharField(null=True, blank=True, max_length=500)
 	homepage_link = models.CharField(null=True, blank=True, max_length=500)
 	facebook_link = models.CharField(null=True, blank=True, max_length=100)
 	instagram_link = models.CharField(null=True, blank=True, max_length=100)
@@ -40,6 +53,11 @@ class Profile(models.Model):
 	def __str__ (self):
 		return self.user.username
 
+	def number_of_follows(self):
+		return self.follows.count()
+	
+	def number_of_followers(self):
+		return self.followed_by.count()
 
 def create_profile(sender, instance, created, **kwargs):
 	if created:
